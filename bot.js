@@ -153,6 +153,16 @@ function initBot(){
 				message: "sleeping"
 		});
 		}
+		else if (message == "!exit" && isSu(user)) {
+		enable = false;
+		bot.sendMessage({
+				to: channelID,
+				message: "stoping"
+		});
+		setTimeout("process.exit()", 1000); // ça généère une erreur :(
+		// mais au moins ça quitte après avoir envoyer le message "stoping"
+		
+		}
 		
 		if (enable) {
 			
