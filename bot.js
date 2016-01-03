@@ -4,7 +4,7 @@ var querystring = require('querystring');
 var DiscordClient = require('discord.io');
 var os = require('os');
 var fs = require("fs");
-
+var bot;
 var enable = true
 
 var suUser=["ChickenStorm","Liador","Oxymore"];
@@ -103,7 +103,7 @@ inp :"!mort",
 function initBot(){
 		
 	
-	var bot = new DiscordClient({
+	bot = new DiscordClient({
 	    autorun: true,
 	    email: emailBot,
 	    password: passwordBot,
