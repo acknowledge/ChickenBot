@@ -6,8 +6,9 @@ var os = require('os');
 var fs = require("fs");
 var userList =  require('./data/user.js');
 var bot;
-var enable = true
-
+var enable = true;
+var forceEnable = false;
+var forceDisable = false;
 
 var emailBot="";
 var passwordBot = "";
@@ -35,20 +36,37 @@ function initBot(){
 	});
 	
 	
-	bot.on('ready', function() {
-	    console.log(bot.username + " - (" + bot.id + ")");
+	switchStatusMessage = function (){
 		if (enable) {
-		bot.setPresence({
-			idle_since: null,
-			game: "Status : enable"
-		 });
+			bot.setPresence({
+				idle_since: null,
+				game: "Status : enable"
+			 });
 		}
 		else{
-		bot.setPresence({
-			idle_since: Date.now(),
-			game: "Status : disable"
-		});
+			bot.setPresence({
+				idle_since: Date.now(),
+				game: "Status : disable"
+			});
+		}
+		if (forceEnable) {
+			bot.setPresence({
+				idle_since: null,
+				game: "Status : Force enable"
+			});
+		}
+		if (forceDisable) {
+			bot.setPresence({
+				idle_since: Date.now(),
+				game: "Status : Force disable"
+			});
+		}
 	}
+
+	
+	bot.on('ready', function() {
+		console.log(bot.username + " - (" + bot.id + ")");
+		switchStatusMessage();
 	});
 	
 	/*bot.on('message', function(user, userID, channelID, message, rawEvent) {
@@ -69,7 +87,7 @@ function initBot(){
 				commandManage[i].func(user, userID, channelID, message, rawEvent);
 			}
 		}
-		if (enable) {
+		if ((enable || forceEnable) && !forceDisable) {
 			
 			for(var i in commandList){
 				if (commandList[i].testInput(user, userID, channelID, message, rawEvent)) {
@@ -219,10 +237,11 @@ var commandManage = [
 					to: channelID,
 					message: "enable"
 				    });
-				    bot.setPresence({
+				    /*bot.setPresence({
 					 idle_since: null,
 					game: "Status : enable"
-				    });
+				    });*/
+				    switchStatusMessage();
 				},
 				"!enable", "active le bot (modo)",function(user, userID, channelID, message, rawEvent){return userList.isModo(userID) || userList.isAdmin(userID)}
 				),
@@ -237,15 +256,16 @@ var commandManage = [
 				},
 				function(user, userID, channelID, message, rawEvent){
 				    
-				    enable = true;
+				    enable = false;
 				    bot.sendMessage({
 					to: channelID,
 					message: "sleeping"
 				    });
-				    bot.setPresence({
+				    /*bot.setPresence({
 					 idle_since: Date.now(),
 					game: "Status : disable"
-				    });
+				    });*/
+				    switchStatusMessage();
 				    
 				},
 				"!disable", "desactive le bot (modo)",function(user, userID, channelID, message, rawEvent){return userList.isModo(userID) || userList.isAdmin(userID)}
@@ -274,6 +294,70 @@ var commandManage = [
 
 				},
 				"!exit", "arrête le bot (admin)",function(user, userID, channelID, message, rawEvent){return userList.isAdmin(userID)}
+				),
+		    new commandC(
+				function(user, userID, channelID, message, rawEvent){
+				    if(message=="!forceEnableToggle" && userList.isAdmin(userID)){
+					    return true
+				    }
+				    else{
+					    return false
+				    }
+				},
+				function(user, userID, channelID, message, rawEvent){
+				    
+				    forceEnable = !forceEnable;
+				    
+				    if (forceEnable) {
+					bot.sendMessage({
+						to: channelID,
+						message: "forceEnable on"
+					});
+					forceDisable = false;
+				    }
+				    else{
+					bot.sendMessage({
+						to: channelID,
+						message: "forceEnable off"
+					});
+				    }
+				    switchStatusMessage();
+				    
+				},
+				"!forceEnableToggle", "change si le bot est forcé a être activé (admin)",function(user, userID, channelID, message, rawEvent){return userList.isAdmin(userID)}
+				),
+		    new commandC(
+				function(user, userID, channelID, message, rawEvent){
+				    if(message=="!forceDisableToggle" && userList.isAdmin(userID)){
+					    return true
+				    }
+				    else{
+					    return false
+				    }
+				},
+				function(user, userID, channelID, message, rawEvent){
+				    
+				    forceDisable = !forceDisable;
+				    
+				    if (forceEnable) {
+					bot.sendMessage({
+						to: channelID,
+						message: "forceDisable on"
+					});
+					forceEnable = false;
+				    }
+				    else{
+					bot.sendMessage({
+						to: channelID,
+						message: "forceDisable off"
+					});
+				    }
+				    switchStatusMessage();
+				    
+				
+
+				},
+				"!forceDisableToggle", "change si le bot est forcé a être désactivé (admin)",function(user, userID, channelID, message, rawEvent){return userList.isAdmin(userID)}
 				)
 ]
 
