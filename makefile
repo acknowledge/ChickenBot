@@ -4,7 +4,7 @@ update:
 	wget "https://github.com/ChickenStorm/ChickenBot/archive/master.zip";
 	unzip master.zip;
 	rm master.zip;
-	$(OBJ_FILES);
+	$(OBJ_FILES)
 	rm -r ChickenBot-master;
 
 %.js:
