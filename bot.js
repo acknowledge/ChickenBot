@@ -37,10 +37,18 @@ function initBot(){
 	
 	bot.on('ready', function() {
 	    console.log(bot.username + " - (" + bot.id + ")");
-		/*bot.sendMessage({
-		    to: "133235989429616641",
-		    message: "str"
-		});*/
+		if (enable) {
+		bot.setPresence({
+			idle_since: null,
+			game: "Status : enable"
+		 });
+		}
+		else{
+		bot.setPresence({
+			idle_since: Date.now(),
+			game: "Status : disable"
+		});
+	}
 	});
 	
 	/*bot.on('message', function(user, userID, channelID, message, rawEvent) {
@@ -52,51 +60,10 @@ function initBot(){
 	});
 	
 	*/
-	/*function sendmsg(str){
-	bot.sendMessage({
-		    to: "133235989429616641",
-		    message: str
-		});
-	}*/
-	
 	
 	
 	bot.on('message', function(user, userID, channelID, message, rawEvent) {
-		/*if (message == "!enable" && userList.isAdmin(userID) ) {
-			enable = true;
-			bot.sendMessage({
-				to: channelID,
-				message: "enable"
-		});
-		}
-		else if (message == "!disable" && userList.isAdmin(userID)) {
-			enable = false;
-			bot.sendMessage({
-				to: channelID,
-				message: "sleeping"
-		});
-		}
-		else if (message == "!exit" && userList.isAdmin(userID)) {
-		enable = false;
-		bot.sendMessage({
-				to: channelID,
-				message: "stoping"
-		});
-		setTimeout("process.exit()", 1000); // ça généère une erreur :(
-		// mais au moins ça quitte après avoir envoyer le message "stoping"
 		
-		}
-		
-		if (enable) {
-			
-			for(var i in commandList){
-				if (commandList[i].input(user, userID, channelID, message, rawEvent)) {
-					commandList[i].func(user, userID, channelID, message, rawEvent);
-				}
-			}
-			
-		}
-		*/
 		for(var i in commandManage){
 			if (commandManage[i].testInput(user, userID, channelID, message, rawEvent)) {
 				commandManage[i].func(user, userID, channelID, message, rawEvent);
@@ -115,56 +82,17 @@ function initBot(){
 		
 	});
 	
-	if (enable) {
-		bot.setPresence({
-			idle_since: null,
-			game: "Status : enable"
-		 });
-	}
-	else{
-		bot.setPresence({
-			idle_since: Date.now(),
-			game: "Status : disable"
-		});
-	}
+	
 }
 
 
-/*bot.on('message', function(user, userID, channelID, message, rawEvent) {
-    if (message === "ping") {
-        bot.sendMessage({
-            to: channelID,
-            message: "pong"
-        });
-    }
-	else if (message === "!info") {
-        bot.sendMessage({
-            to: channelID,
-            message: user + ' '+userID + ' '+channelID+' '+message + ' '+ rawEvent
-        });
-    }
-	else if (message === "!test") {
-        bot.sendMessage({
-            to: channelID,
-            message: "testing testing"
-        });
-    }
-	
-	
-	else if(message=="!"){
-	bot.sendMessage({
-            to: channelID,
-            message: "A MORT helior"
-        });
-	}
 
-});*/
-/*
-var server = http.createServer(function(req, res) {
+
+/*var server = http.createServer(function(req, res) {
     var page = url.parse(req.url).pathname;
 	var params = querystring.parse(url.parse(req.url).query);
 	res.writeHead(200, {"Content-Type": "text/plain"});
-	 sendmsg("page")
+
 	
     //console.log(page);
     
@@ -172,8 +100,8 @@ var server = http.createServer(function(req, res) {
     res.end();
 });
 
-server.listen(8080);*/
-
+server.listen(80);
+*/
 
 /***************************************************************************************************************************************************************/
 /***************************************************************************************************************************************************************/
