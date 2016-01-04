@@ -4,6 +4,7 @@ update:
 	wget "https://github.com/ChickenStorm/ChickenBot/archive/master.zip";
 	unzip master.zip;
 	rm master.zip;
+	rm -r data;
 	mkdir data;
 	cp ChickenBot-master/bot.js bot.js;
 	cp ChickenBot-master/data/user.js ./data/user.js;
