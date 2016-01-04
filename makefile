@@ -10,5 +10,6 @@ update:
 	cp ChickenBot-master/data/user.js ./data/user.js;
 	cp ChickenBot-master/data/channel.js ./data/channel.js;
 	cp ChickenBot-master/makefile makefile;
+	cp ChickenBot-master/run.sh run.sh;
 	rm -r ChickenBot-master;
 
