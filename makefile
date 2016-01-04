@@ -1,6 +1,6 @@
 OBJ_FILES = bot.js makefileC data/user.js data/channel.js;
 
-update : 
+update: 
     wget "https://github.com/ChickenStorm/ChickenBot/archive/master.zip";
     unzip master.zip;
     rm master.zip;
@@ -8,9 +8,9 @@ update :
     rm -r ChickenBot-master;
     
 
-%.js :
+%.js:
      cp ChickenBot-master\%.js %.js
-%.txt :
+%.txt:
      cp ChickenBot-master\%.txt %.txt
-makefileC :
+makefileC:
     cp ChickenBot-master\makefile makefile
