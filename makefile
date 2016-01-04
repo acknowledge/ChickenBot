@@ -4,12 +4,10 @@ update:
 	wget "https://github.com/ChickenStorm/ChickenBot/archive/master.zip";
 	unzip master.zip;
 	rm master.zip;
-	$(OBJ_FILES)
+	mkdir data;
+	cp ChickenBot-master/bot.js bot.js;
+	cp ChickenBot-master/data/user.js ./data/user.js;
+	cp ChickenBot-master/data/channel.js ./data/channel.js;
+	cp ChickenBot-master/makefile makefile;
 	rm -r ChickenBot-master;
 
-%.js:
-	cp ChickenBot-master\%.js %.js
-%.txt:
-	cp ChickenBot-master\%.txt %.txt
-makefileC:
-	cp ChickenBot-master\makefile makefile
