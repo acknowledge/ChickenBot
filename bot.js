@@ -4,10 +4,10 @@ var querystring = require('querystring');
 var DiscordClient = require('discord.io');
 var os = require('os');
 var fs = require("fs");
+var userList =  require('./data/user.js');
 var bot;
 var enable = true
 
-var suUser=["ChickenStorm","Liador","Oxymore"];
 
 var emailBot="";
 var passwordBot = "";
@@ -21,84 +21,7 @@ fs.readFile('login.txt','ascii', function (err, data) {
 
 
 
-var commandList = [
-{
-input: function(user, userID, channelID, message, rawEvent){
-	if(message=="!ping"){
-		return true
-	}
-	else{
-		return false
-	}
-	},
-func: function(user, userID, channelID, message, rawEvent){
-	bot.sendMessage({
-            to: channelID,
-            message: "pong"
-        });
-	},
-descr:"affiche pong",
-inp :"!ping"
-},
-{
-input: function(user, userID, channelID, message, rawEvent){
-	if(message=="!help"){
-		return true
-	}
-	else{
-		return false
-	}
-	},
-func: function(user, userID, channelID, message, rawEvent){
-	
-	for (var i in commandList){
-		bot.sendMessage({
-		    to: channelID,
-		    message: commandList[i].inp + " : "+commandList[i].descr
-		});
-	}
-	},
-descr:" affiche la lise des commandes",
-inp :"!help",
-},
-{
-input: function(user, userID, channelID, message, rawEvent){
-	if(message=="!info"){
-		return true
-	}
-	else{
-		return false
-	}
-	},
-func: function(user, userID, channelID, message, rawEvent){
-	bot.sendMessage({
-            to: channelID,
-            message: 'user : '+user +'; userID : '+userID+'; channelID : '+channelID+'; message : '+message
-        });
-	},
-descr:" retourne les infos sur le message",
-inp :"!info",
-},
-{
-input: function(user, userID, channelID, message, rawEvent){
-	if(message=="!mort"){
-		return true
-	}
-	else{
-		return false
-	}
-	},
-func: function(user, userID, channelID, message, rawEvent){
-	bot.sendMessage({
-            to: channelID,
-            message: "A MORT HELIOR"
-        });
-	},
-descr:"A MORT HELIOR",
-inp :"!mort",
-},
 
-]
 
 function initBot(){
 		
@@ -120,7 +43,7 @@ function initBot(){
 		});*/
 	});
 	
-	bot.on('message', function(user, userID, channelID, message, rawEvent) {
+	/*bot.on('message', function(user, userID, channelID, message, rawEvent) {
 	fs.appendFile('message.txt', 'user : '+user +'; userID : '+userID+'; channelID : '+channelID+'; message : '+message+os.EOL, function (err) {
 	  if (err) throw err;
 	  //console.log('The "data to append" was appended to file!');
@@ -128,7 +51,7 @@ function initBot(){
 	
 	});
 	
-	
+	*/
 	/*function sendmsg(str){
 	bot.sendMessage({
 		    to: "133235989429616641",
@@ -139,21 +62,21 @@ function initBot(){
 	
 	
 	bot.on('message', function(user, userID, channelID, message, rawEvent) {
-		if (message == "!enable" && isSu(user) ) {
+		/*if (message == "!enable" && userList.isAdmin(userID) ) {
 			enable = true;
 			bot.sendMessage({
 				to: channelID,
 				message: "enable"
 		});
 		}
-		else if (message == "!disable" && isSu(user)) {
+		else if (message == "!disable" && userList.isAdmin(userID)) {
 			enable = false;
 			bot.sendMessage({
 				to: channelID,
 				message: "sleeping"
 		});
 		}
-		else if (message == "!exit" && isSu(user)) {
+		else if (message == "!exit" && userList.isAdmin(userID)) {
 		enable = false;
 		bot.sendMessage({
 				to: channelID,
@@ -173,22 +96,27 @@ function initBot(){
 			}
 			
 		}
+		*/
+		for(var i in commandManage){
+			if (commandManage[i].testInput(user, userID, channelID, message, rawEvent)) {
+				commandManage[i].func(user, userID, channelID, message, rawEvent);
+			}
+		}
+		if (enable) {
+			
+			for(var i in commandList){
+				if (commandList[i].testInput(user, userID, channelID, message, rawEvent)) {
+					commandList[i].func(user, userID, channelID, message, rawEvent);
+				}
+			}
+			
+		}
 		
 		
 	});
 }
 
-function isSu(user){
-		retrunval = false;
-		
-		for(var i in suUser){
-			if (suUser[i] == user) {
-				retrunval=true;
-			}
-		}
-		
-		return retrunval;
-	}
+
 /*bot.on('message', function(user, userID, channelID, message, rawEvent) {
     if (message === "ping") {
         bot.sendMessage({
@@ -232,3 +160,167 @@ var server = http.createServer(function(req, res) {
 });
 
 server.listen(8080);*/
+
+
+/***************************************************************************************************************************************************************/
+/***************************************************************************************************************************************************************/
+
+
+function commandC(testInputp,funcp,inputDescriptionp,descrp,showHelpp) {
+    this.testInput = testInputp; // fonction de teste sur l'entrée
+    this.func = funcp; // fonction a executer
+    this.inputDescription= inputDescriptionp; // aide : affiche linput demander
+    this.descr = descrp; // aide : afffiche ce que la commande fait
+    this.showHelp= showHelpp;// fonction qui déteermine si l'aide
+}
+
+
+truefunc = function(){
+    return true
+}
+
+var commandList = [new commandC(
+				function(user, userID, channelID, message, rawEvent){
+				    if(message=="!ping"){
+					return true
+				    }
+				    else{
+					return false
+				    }
+				},
+				function(user, userID, channelID, message, rawEvent){
+				    bot.sendMessage({
+					to: channelID,
+					message: "pong"
+				    });
+				},
+				"!ping", "affiche pong",truefunc
+				),
+		   new commandC(
+				function(user, userID, channelID, message, rawEvent){
+				    if(message=="!help"){
+					    return true
+				    }
+				    else{
+					    return false
+				    }
+				},
+				function(user, userID, channelID, message, rawEvent){
+				    
+				    for (var i in commandListAll){
+					if (commandListAll[i].showHelp(user, userID, channelID, message, rawEvent)) {
+					    
+					    
+					    bot.sendMessage({
+						to: channelID,
+						message: commandListAll[i].inputDescription + " : "+commandListAll[i].descr
+					    });
+					}
+				    }
+				    
+				},
+				"!help", "affiche la lise des commandes",truefunc
+				),
+		   new commandC(
+				function(user, userID, channelID, message, rawEvent){
+				    if(message=="!info"){
+					    return true
+				    }
+				    else{
+					    return false
+				    }
+				},
+				function(user, userID, channelID, message, rawEvent){
+				    
+					    bot.sendMessage({
+						to: channelID,
+						message: 'user : '+user +'; userID : '+userID+'; channelID : '+channelID+'; message : '+message
+					    });
+				},
+				"!info", "retourne les infos sur le message",truefunc
+				),
+		   new commandC(
+				function(user, userID, channelID, message, rawEvent){
+				    if(message=="!mort"){
+					    return true
+				    }
+				    else{
+					    return false
+				    }
+				},
+				function(user, userID, channelID, message, rawEvent){
+					bot.sendMessage({
+					    to: channelID,
+					    message: "A MORT HELIOR"
+					});
+				},
+				"!mort", "A MORT HELIOR",truefunc
+				)
+		   
+
+
+]
+
+var commandManage = [
+		    new commandC(
+				function(user, userID, channelID, message, rawEvent){
+				    if(message=="!enable" && userList.isModo(userID)){
+					    return true
+				    }
+				    else{
+					    return false
+				    }
+				},
+				function(user, userID, channelID, message, rawEvent){
+				    
+				    enable = true;
+				    bot.sendMessage({
+					to: channelID,
+					message: "enable"
+				    });
+				},
+				"!enable", "active le bot (modo)",function(user, userID, channelID, message, rawEvent){return userList.isModo(userID) || userList.isAdmin(userID)}
+				),
+		   new commandC(
+				function(user, userID, channelID, message, rawEvent){
+				    if(message=="!disable" && userList.isModo(userID)){
+					    return true
+				    }
+				    else{
+					    return false
+				    }
+				},
+				function(user, userID, channelID, message, rawEvent){
+				    
+				    enable = true;
+				    bot.sendMessage({
+					to: channelID,
+					message: "sleeping"
+				    });
+				},
+				"!disable", "desactive le bot (modo)",function(user, userID, channelID, message, rawEvent){return userList.isModo(userID) || userList.isAdmin(userID)}
+				),
+		   new commandC(
+				function(user, userID, channelID, message, rawEvent){
+				    if(message=="!exit" && userList.isAdmin(userID)){
+					    return true
+				    }
+				    else{
+					    return false
+				    }
+				},
+				function(user, userID, channelID, message, rawEvent){
+				    
+				    enable = true;
+				    bot.sendMessage({
+					to: channelID,
+					message: "stopping"
+				    });
+				setTimeout("process.exit()", 1000); // ça généère une erreur :(
+
+				},
+				"!exit", "arrête le bot (admin)",function(user, userID, channelID, message, rawEvent){return userList.isAdmin(userID)}
+				)
+]
+
+commandListAll = commandList.concat(commandManage);
