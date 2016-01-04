@@ -12,7 +12,8 @@ function userC (userIDp,namep,isAdminp,isModop,isBanp,mpChannelIDp){
 userList = [new userC("93784478299725824","ChickenStorm",true,true,false,"133315338774380544"),
 		    new userC("132783770532184064","Oxymore",true,true,false,""),
 		    new userC("128272446259200000","luneverte",false,true,false,""),
-		    new userC("132931838841716736","Sufx et Whab",false,true,false)
+		    new userC("132931838841716736","Sufx et Whab",false,true,false),
+		    new userC("92374890794975232","Liador",true,true,false,"")
 		    ]
 exports.users = userList;
 
