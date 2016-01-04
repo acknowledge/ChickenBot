@@ -114,6 +114,19 @@ function initBot(){
 		
 		
 	});
+	
+	if (enable) {
+		bot.setPresence({
+			idle_since: null,
+			game: "Status : enable"
+		 });
+	}
+	else{
+		bot.setPresence({
+			idle_since: Date.now(),
+			game: "Status : disable"
+		});
+	}
 }
 
 
@@ -278,6 +291,10 @@ var commandManage = [
 					to: channelID,
 					message: "enable"
 				    });
+				    bot.setPresence({
+					 idle_since: null,
+					game: "Status : enable"
+				    });
 				},
 				"!enable", "active le bot (modo)",function(user, userID, channelID, message, rawEvent){return userList.isModo(userID) || userList.isAdmin(userID)}
 				),
@@ -297,6 +314,11 @@ var commandManage = [
 					to: channelID,
 					message: "sleeping"
 				    });
+				    bot.setPresence({
+					 idle_since: Date.now(),
+					game: "Status : disable"
+				    });
+				    
 				},
 				"!disable", "desactive le bot (modo)",function(user, userID, channelID, message, rawEvent){return userList.isModo(userID) || userList.isAdmin(userID)}
 				),
@@ -316,6 +338,10 @@ var commandManage = [
 					to: channelID,
 					message: "stopping"
 				    });
+				    bot.setPresence({
+					idle_since: Date.now(),
+					game: "Status : stop"
+				});
 				setTimeout("process.exit()", 1000); // ça généère une erreur :(
 
 				},
