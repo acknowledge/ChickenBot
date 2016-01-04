@@ -1,10 +1,10 @@
 function userC (userIDp,namep,isAdminp,isModop,isBanp,mpChannelIDp){
-    this.userID =userIDp;
-    this.name = namep;
-    this.isAdmin = isAdminp;
-    this.isModo = isModop;
-    this.isBan = isBanp;
-    this.mpChannelID = mpChannelIDp || ""
+    this.userID =userIDp; // user id de la presonne
+    this.name = namep; // son pesudo
+    this.isAdmin = isAdminp; // est admin
+    this.isModo = isModop; // ets modo
+    this.isBan = isBanp; // ets ban
+    this.mpChannelID = mpChannelIDp || "" // son chanel de mp avec le bot
     
 }
 

@@ -5,15 +5,21 @@ var DiscordClient = require('discord.io');
 var os = require('os');
 var fs = require("fs");
 var userList =  require('./data/user.js');
+/******************************************************************/
 var bot;
 var enable = true;
-var forceEnable = false;
-var forceDisable = false;
+var forceEnable = false; //
+var forceDisable = false; // au mieux les deux ne sont aps a true en même temps
+// sinon c'est forceDisable qui prime
 
 var emailBot="";
 var passwordBot = "";
 
-fs.readFile('login.txt','ascii', function (err, data) {
+/*********************************************************************/
+
+
+
+fs.readFile('login.txt','ascii', function (err, data) { // lit les login du bot
 	dataTemp= data.split(";");
 	emailBot = dataTemp[0];
 	passwordBot = dataTemp[1];
@@ -22,12 +28,12 @@ fs.readFile('login.txt','ascii', function (err, data) {
 
 
 
+/*******************************************************************/
 
-
-function initBot(){
+function initBot(){ // initilisation du bot est des différents callback
 		
 	
-	bot = new DiscordClient({
+	bot = new DiscordClient({ // login
 	    autorun: true,
 	    email: emailBot,
 	    password: passwordBot,
@@ -36,35 +42,35 @@ function initBot(){
 	});
 	
 	
-	switchStatusMessage = function (){
+	switchStatusMessage = function (){ // change la message du bot (sous playing) selon les différente type d'activation
 		if (enable) {
 			bot.setPresence({
 				idle_since: null,
-				game: "Status : enable"
+				game: "Status : enable (online)"
 			 });
 		}
 		else{
 			bot.setPresence({
 				idle_since: Date.now(),
-				game: "Status : disable"
+				game: "Status : disable (online)"
 			});
 		}
 		if (forceEnable) {
 			bot.setPresence({
 				idle_since: null,
-				game: "Status : Force enable"
+				game: "Status : Force enable (online)"
 			});
 		}
 		if (forceDisable) {
 			bot.setPresence({
 				idle_since: Date.now(),
-				game: "Status : Force disable"
+				game: "Status : Force disable (online)"
 			});
 		}
 	}
 
 	
-	bot.on('ready', function() {
+	bot.on('ready', function() { // quand le bot est pret 
 		console.log(bot.username + " - (" + bot.id + ")");
 		switchStatusMessage();
 	});
@@ -82,21 +88,20 @@ function initBot(){
 	
 	bot.on('message', function(user, userID, channelID, message, rawEvent) {
 		
-		for(var i in commandManage){
+		for(var i in commandManage){ // regarde sur les commandes qui ne sont pas désactivé même si le bot est désactivé
 			if (commandManage[i].testInput(user, userID, channelID, message, rawEvent)) {
-				commandManage[i].func(user, userID, channelID, message, rawEvent);
+				commandManage[i].func(user, userID, channelID, message, rawEvent); // éxécute la commande si la condition correcte est verifiée
 			}
 		}
-		if ((enable || forceEnable) && !forceDisable) {
+		if ((enable || forceEnable) && !forceDisable) { // si le bot est activé ou qu'il est forcé d'être activé et qu'il n'est pas forcé d'être désactivé 
 			
 			for(var i in commandList){
 				if (commandList[i].testInput(user, userID, channelID, message, rawEvent)) {
-					commandList[i].func(user, userID, channelID, message, rawEvent);
+					commandList[i].func(user, userID, channelID, message, rawEvent); // éxécute la commande si la condition correcte est verifiée
 				}
 			}
 			
 		}
-		
 		
 	});
 	
@@ -105,6 +110,7 @@ function initBot(){
 
 
 
+// peux être utiliser ça comme interface admin du bot
 
 /*var server = http.createServer(function(req, res) {
     var page = url.parse(req.url).pathname;
@@ -124,7 +130,7 @@ server.listen(80);
 /***************************************************************************************************************************************************************/
 /***************************************************************************************************************************************************************/
 
-
+// object commande
 function commandC(testInputp,funcp,inputDescriptionp,descrp,showHelpp) {
     this.testInput = testInputp; // fonction de teste sur l'entrée
     this.func = funcp; // fonction a executer
@@ -134,10 +140,10 @@ function commandC(testInputp,funcp,inputDescriptionp,descrp,showHelpp) {
 }
 
 
-truefunc = function(){
+truefunc = function(){ // retourne toujours vrai
     return true
 }
-
+// liste des commandes
 var commandList = [new commandC(
 				function(user, userID, channelID, message, rawEvent){
 				    if(message=="!ping"){
@@ -165,17 +171,18 @@ var commandList = [new commandC(
 				    }
 				},
 				function(user, userID, channelID, message, rawEvent){
-				    
+				    var messageTemp = "";
 				    for (var i in commandListAll){
 					if (commandListAll[i].showHelp(user, userID, channelID, message, rawEvent)) {
+					    messageTemp += commandListAll[i].inputDescription + " : "+commandListAll[i].descr+"\n"
 					    
 					    
-					    bot.sendMessage({
-						to: channelID,
-						message: commandListAll[i].inputDescription + " : "+commandListAll[i].descr
-					    });
 					}
 				    }
+				    bot.sendMessage({
+						to: channelID,
+						message: messageTemp
+					    });
 				    
 				},
 				"!help", "affiche la lise des commandes",truefunc
@@ -288,9 +295,9 @@ var commandManage = [
 				    });
 				    bot.setPresence({
 					idle_since: Date.now(),
-					game: "Status : stop"
+					game: "Status : stop (offline)"
 				});
-				setTimeout("process.exit()", 1000); // ça généère une erreur :(
+				setTimeout(function(){process.exit(0)}, 1000); // ça généère une erreur :(
 
 				},
 				"!exit", "arrête le bot (admin)",function(user, userID, channelID, message, rawEvent){return userList.isAdmin(userID)}
@@ -361,4 +368,4 @@ var commandManage = [
 				)
 ]
 
-commandListAll = commandList.concat(commandManage);
+commandListAll = commandList.concat(commandManage); // toute les commandes
