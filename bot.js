@@ -11,7 +11,8 @@ var enable = true;
 var forceEnable = false; //
 var forceDisable = false; // au mieux les deux ne sont aps a true en même temps
 // sinon c'est forceDisable qui prime
-
+var statusRefreshIntervalRef;
+var statusRefreshInterval = 1800000 ;//in millisecond (30 minutes)
 var emailBot="";
 var passwordBot = "";
 
@@ -73,6 +74,8 @@ function initBot(){ // initilisation du bot est des différents callback
 	bot.on('ready', function() { // quand le bot est pret 
 		console.log(bot.username + " - (" + bot.id + ")");
 		switchStatusMessage();
+		clearInterval(statusRefreshIntervalRef);
+		statusRefreshIntervalRef = setInterval(switchStatusMessage,statusRefreshInterval);
 	});
 	
 	/*bot.on('message', function(user, userID, channelID, message, rawEvent) {
@@ -221,12 +224,30 @@ var commandList = [new commandC(
 					});
 				},
 				"!mort", "A MORT HELIOR",truefunc
+				),
+		   new commandC(
+				function(user, userID, channelID, message, rawEvent){
+				    if(message=="!about"){
+					    return true
+				    }
+				    else{
+					    return false
+				    }
+				},
+				function(user, userID, channelID, message, rawEvent){
+					bot.sendMessage({
+					    to: channelID,
+					    message: "Bonjour, je suis Chicken Bot.\n\n j'ai été créé le 3 janvier 2016 par ChickenStorm pour le serveur Asylamba 2.0 sur discord.\n\n"+
+					    "Mon Repositories git se trouve sous https://github.com/ChickenStorm/ChickenBot\n\n entrez \"!help\" pour voir la liste de mes commandes"
+					    
+					});
+				},
+				"!about", "à propos de ce bot",truefunc
 				)
 		   
 
 
 ]
-
 var commandManage = [
 		    new commandC(
 				function(user, userID, channelID, message, rawEvent){

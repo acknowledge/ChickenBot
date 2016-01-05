@@ -13,3 +13,9 @@ update:
 	cp ChickenBot-master/run.sh run.sh;
 	rm -r ChickenBot-master;
 
+updateLib:
+	npm install discord.io
+updateAll:
+	updateLib
+	update
+	update
