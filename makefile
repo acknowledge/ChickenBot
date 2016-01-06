@@ -1,5 +1,7 @@
 OBJ_FILES = bot.js makefileC data/user.js data/channel.js;
 
+all: updateThenRun
+
 update: 
 	wget "https://github.com/ChickenStorm/ChickenBot/archive/master.zip";
 	unzip master.zip;
@@ -15,7 +17,11 @@ update:
 
 updateLib:
 	npm install discord.io
-updateAll:
-	updateLib
-	update
-	update
+updateAll: updateLib update
+
+run :
+	sh run.sh
+
+updateThenRun: update run
+
+updateAllThenRun: updateAll run
