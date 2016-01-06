@@ -12,7 +12,7 @@ var forceEnable = false; //
 var forceDisable = false; // au mieux les deux ne sont aps a true en même temps
 // sinon c'est forceDisable qui prime
 var statusRefreshIntervalRef;
-var statusRefreshInterval = 1800000 ;//in millisecond (30 minutes)
+var statusRefreshInterval = 1000000 ;//in millisecond (1000 sec => 16.6667 minutes)
 var emailBot="";
 var passwordBot = "";
 
@@ -75,7 +75,7 @@ function initBot(){ // initilisation du bot est des différents callback
 		console.log(bot.username + " - (" + bot.id + ")");
 		switchStatusMessage();
 		clearInterval(statusRefreshIntervalRef);
-		statusRefreshIntervalRef = setInterval(switchStatusMessage,statusRefreshInterval);
+		statusRefreshIntervalRef = setInterval(function(){switchStatusMessage();},statusRefreshInterval);
 	});
 	
 	/*bot.on('message', function(user, userID, channelID, message, rawEvent) {
