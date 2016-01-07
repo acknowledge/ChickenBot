@@ -30,10 +30,10 @@ var userList =  require('./data/user.js');
 var bot;
 var enable = true;
 var forceEnable = false; //
-var forceDisable = false; // au mieux les deux ne sont aps a true en même temps
+var forceDisable = false; // au mieux les deux ne sont pas a true en même temps
 // sinon c'est forceDisable qui prime
 var statusRefreshIntervalRef;
-var statusRefreshInterval = 1000000 ;//in millisecond (1000 sec => 16.6667 minutes)
+var statusRefreshInterval = 1000000 ; //in millisecond (1000 sec => 16.6667 minutes)
 var emailBot="";
 var passwordBot = "";
 
@@ -52,7 +52,7 @@ fs.readFile('login.txt','ascii', function (err, data) { // lit les login du bot
 
 /*******************************************************************/
 
-function initBot(){ // initilisation du bot est des différents callback
+function initBot(){ // initilisation du bot et des différents callbacks
 		
 	
 	bot = new DiscordClient({ // login
@@ -64,7 +64,7 @@ function initBot(){ // initilisation du bot est des différents callback
 	});
 	
 	
-	switchStatusMessage = function (){ // change la message du bot (sous playing) selon les différente type d'activation
+	switchStatusMessage = function (){ // change le message du bot (sous playing) selon les différents types d'activation
 		if (enable) {
 			bot.setPresence({
 				idle_since: null,
@@ -112,16 +112,16 @@ function initBot(){ // initilisation du bot est des différents callback
 	
 	bot.on('message', function(user, userID, channelID, message, rawEvent) {
 		
-		for(var i in commandManage){ // regarde sur les commandes qui ne sont pas désactivé même si le bot est désactivé
+		for(var i in commandManage){ // regarde sur les commandes qui ne sont pas désactivées même si le bot est désactivé
 			if (commandManage[i].testInput(user, userID, channelID, message, rawEvent)) {
-				commandManage[i].func(user, userID, channelID, message, rawEvent); // éxécute la commande si la condition correcte est verifiée
+				commandManage[i].func(user, userID, channelID, message, rawEvent); // exécute la commande si la condition correcte est verifiée
 			}
 		}
 		if ((enable || forceEnable) && !forceDisable) { // si le bot est activé ou qu'il est forcé d'être activé et qu'il n'est pas forcé d'être désactivé 
 			
 			for(var i in commandList){
 				if (commandList[i].testInput(user, userID, channelID, message, rawEvent)) {
-					commandList[i].func(user, userID, channelID, message, rawEvent); // éxécute la commande si la condition correcte est verifiée
+					commandList[i].func(user, userID, channelID, message, rawEvent); // exécute la commande si la condition correcte est verifiée
 				}
 			}
 			
@@ -156,11 +156,11 @@ server.listen(80);
 
 // object commande
 function commandC(testInputp,funcp,inputDescriptionp,descrp,showHelpp) {
-    this.testInput = testInputp; // fonction de teste sur l'entrée
+    this.testInput = testInputp; // fonction de test sur l'entrée
     this.func = funcp; // fonction a executer
-    this.inputDescription= inputDescriptionp; // aide : affiche linput demander
+    this.inputDescription= inputDescriptionp; // aide : affiche l'input demandé
     this.descr = descrp; // aide : afffiche ce que la commande fait
-    this.showHelp= showHelpp;// fonction qui déteermine si l'aide
+    this.showHelp= showHelpp; // fonction qui détermine si l'aide
 }
 
 
@@ -258,8 +258,8 @@ var commandList = [new commandC(
 				function(user, userID, channelID, message, rawEvent){
 					bot.sendMessage({
 					    to: channelID,
-					    message: "Bonjour, je suis Chicken Bot.\n\n j'ai été créé le 3 janvier 2016 par ChickenStorm pour le serveur Asylamba 2.0 sur discord.\n\n"+
-					    "Mon Repositories git se trouve sous https://github.com/ChickenStorm/ChickenBot\n\n entrez \"!help\" pour voir la liste de mes commandes"
+					    message: "Bonjour, je suis Chicken Bot.\n\n j'ai été créé le 3 janvier 2016 par ChickenStorm pour le serveur Asylamba 2.0 sur Discord.\n\n"+
+					    "Mon dépôt git se trouve sous https://github.com/ChickenStorm/ChickenBot\n\n entrez \"!help\" pour voir la liste de mes commandes"
 					    
 					});
 				},
@@ -317,7 +317,7 @@ var commandManage = [
 				    switchStatusMessage();
 				    
 				},
-				"!disable", "desactive le bot (modo)",function(user, userID, channelID, message, rawEvent){return userList.isModo(userID) || userList.isAdmin(userID)}
+				"!disable", "désactive le bot (modo)",function(user, userID, channelID, message, rawEvent){return userList.isModo(userID) || userList.isAdmin(userID)}
 				),
 		   new commandC(
 				function(user, userID, channelID, message, rawEvent){
@@ -373,7 +373,7 @@ var commandManage = [
 				    switchStatusMessage();
 				    
 				},
-				"!forceEnableToggle", "change si le bot est forcé a être activé (admin)",function(user, userID, channelID, message, rawEvent){return userList.isAdmin(userID)}
+				"!forceEnableToggle", "change si le bot est forcé à être activé (admin)",function(user, userID, channelID, message, rawEvent){return userList.isAdmin(userID)}
 				),
 		    new commandC(
 				function(user, userID, channelID, message, rawEvent){
@@ -406,7 +406,7 @@ var commandManage = [
 				
 
 				},
-				"!forceDisableToggle", "change si le bot est forcé a être désactivé (admin)",function(user, userID, channelID, message, rawEvent){return userList.isAdmin(userID)}
+				"!forceDisableToggle", "change si le bot est forcé à être désactivé (admin)",function(user, userID, channelID, message, rawEvent){return userList.isAdmin(userID)}
 				)
 ]
 
